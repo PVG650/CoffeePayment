@@ -7,7 +7,8 @@
 elapsedMillis timerRFID;
 
 MFRC522DriverPinSimple ss_pin(4);
-MFRC522DriverSPI driver{ ss_pin };
+SPIClass &spiClass = SPI;
+MFRC522DriverSPI driver{ ss_pin, spiClass };
 MFRC522 mfrc522{ driver };
 
 bool cardPresent = 0;
@@ -16,10 +17,7 @@ uint64_t uidDec = 0;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("huhu");
   mfrc522.PCD_Init();
-  MFRC522Debug::PCD_DumpVersionToSerial(mfrc522, Serial);
-  Serial.println("Scan to see UID");
 }
 
 void loop() {
