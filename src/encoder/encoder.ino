@@ -1,13 +1,15 @@
 #include <ESP32RotaryEncoder.h>  //https://github.com/MaffooClock/ESP32RotaryEncoder
 
-const uint8_t DI_ENCODER_A = 40;
-const uint8_t DI_ENCODER_B = 41;
+const uint8_t DI_ENCODER_A = 41;
+const uint8_t DI_ENCODER_B = 40;
 const int8_t DI_ENCODER_SW = 42;
 
 RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B, DI_ENCODER_SW);
 
 void knobCallback(long value) {
-  Serial.println(value);
+  static long scaledValue = 0;
+  scaledValue = value * 5;
+  Serial.println(scaledValue);
 }
 
 void buttonCallback(unsigned long duration) {

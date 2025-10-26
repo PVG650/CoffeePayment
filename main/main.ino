@@ -6,8 +6,9 @@
 #include <MFRC522DriverPinSimple.h>
 #include <MFRC522Debug.h>
 #include <elapsedMillis.h>
-#include <DatabaseOnSD.h>
+#include <DatabaseOnSD.h>  //https://github.com/divinofire/DatabaseOnSD
 #include <SD.h>
+#include <ESP32RotaryEncoder.h>  //https://github.com/MaffooClock/ESP32RotaryEncoder
 
 #define SD_CS 5
 
@@ -18,6 +19,11 @@ MyTable testTable("keytags.csv");  //this will create or open a table named test
 #define TFT_RST 7
 #define RFID_CS 4
 elapsedMillis timerRFID;
+
+const uint8_t DI_ENCODER_A = 41;
+const uint8_t DI_ENCODER_B = 40;
+const int8_t DI_ENCODER_SW = 42;
+RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B, DI_ENCODER_SW);
 
 SPIClass spiBus(HSPI);
 MFRC522DriverPinSimple rfid_cs_pin(RFID_CS);
@@ -42,6 +48,12 @@ void setup() {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }
+
+  rotaryEncoder.setEncoderType(EncoderType::HAS_PULLUP);
+  rotaryEncoder.setBoundaries(0, 50, false);
+  rotaryEncoder.onTurned(&knobCallback);
+  rotaryEncoder.onPressed(&buttonCallback);
+  rotaryEncoder.begin();
 
   Serial.println("SD-Karte erkannt");
 
@@ -121,4 +133,14 @@ void drawArrow(int textX, int textY) {
     arrowTipX - size, arrowTipY - size,
     arrowTipX - size, arrowTipY + size,
     ST77XX_RED);
+}
+
+void knobCallback(long value) {
+  static long scaledValue = 0;
+  scaledValue = value * 5;
+  Serial.println(scaledValue);
+}
+
+void buttonCallback(unsigned long duration) {
+  Serial.println(duration);
 }
