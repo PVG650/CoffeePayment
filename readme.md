@@ -6,6 +6,7 @@
 |             | RS/DC        | GPIO 16 |
 |             | RST          | GPIO 7  |
 | **SD-Karte**| CS           | GPIO 5  |
+|	      | VDD          | 5V!     |
 | **ENCODER** | SW           | GPIO 42 |
 |             | DT ("A")     | GPIO 40 |
 |             | CLK ("B")    | GPIO 42 |
