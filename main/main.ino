@@ -6,18 +6,22 @@
 #include <MFRC522DriverPinSimple.h>
 #include <MFRC522Debug.h>
 #include <elapsedMillis.h>
+#include <DatabaseOnSD.h>
+#include <SD.h>
+
+#define SD_CS 5
+
+MyTable testTable("keytags.csv");  //this will create or open a table named test.csv in the root of the SD card
 
 #define TFT_CS 15
 #define TFT_DC 16
 #define TFT_RST 7
-#define TFT_SCK 12
-#define TFT_MOSI 11
 #define RFID_CS 4
 elapsedMillis timerRFID;
 
-SPIClass spiBus(FSPI);
+SPIClass spiBus(HSPI);
 MFRC522DriverPinSimple rfid_cs_pin(RFID_CS);
-MFRC522DriverSPI driver{rfid_cs_pin, spiBus};
+MFRC522DriverSPI driver{ rfid_cs_pin, spiBus };
 MFRC522 mfrc522{ driver };
 
 bool cardPresent = 0;
@@ -30,7 +34,32 @@ Adafruit_ST7735 tft = Adafruit_ST7735(&spiBus, TFT_CS, TFT_DC, TFT_RST);
 
 void setup() {
   Serial.begin(115200);
-  spiBus.begin();
+  spiBus.begin(36, 37, 35);  // Display und RFID, erster SPI
+  SPI.begin();               // nutzt GPIO 12=SCK, 13=MISO, 11=MOSI für SD Karte (zweiter SPI)
+
+  // SD initialisieren
+  if (!SD.begin(SD_CS)) {
+    Serial.println("SD-Karte konnte nicht initialisiert werden");
+    while (true) delay(1000);
+  }
+
+  Serial.println("SD-Karte erkannt");
+
+  testTable.printSDstatus();  //[optional] print the initialization status of SD card
+  testTable.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
+  testTable.begin(3, 2);      //[optional] initialize an empty table with 3 rows and 2 columns (has no effect if table is not empty)
+                              //NOTE: there is no need to call begin() if table in NOT empty
+  //write table content
+  Serial.println("writing to table...");
+  testTable.writeCell(0, 0, "NAME");
+  testTable.writeCell(0, 1, "AGE");
+  testTable.writeCell(1, 0, "Divino");
+  testTable.writeCell(1, 1, "23");
+  testTable.writeCell(2, 0, "Fire");
+  testTable.writeCell(2, 1, "22");
+  Serial.println("finished writing!");
+  //the max size of each cell is 20 characters for the sake of memory,
+  //the max cell size can be changed in header file [but I do not recommend it]
 
   pinMode(TFT_CS, OUTPUT);
   digitalWrite(TFT_CS, HIGH);  // deselect
@@ -63,6 +92,9 @@ void setup() {
 }
 
 void loop() {
+
+  Serial.println(testTable.readCell(2, 0));
+
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
     uidDec = 0;
     for (byte i = 0; i < mfrc522.uid.size; i++) {

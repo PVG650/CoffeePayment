@@ -1,8 +1,8 @@
 #include <ESP32RotaryEncoder.h>  //https://github.com/MaffooClock/ESP32RotaryEncoder
 
-const uint8_t DI_ENCODER_A = 2;
-const uint8_t DI_ENCODER_B = 3;
-const int8_t DI_ENCODER_SW = 1;
+const uint8_t DI_ENCODER_A = 40;
+const uint8_t DI_ENCODER_B = 41;
+const int8_t DI_ENCODER_SW = 42;
 
 RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B, DI_ENCODER_SW);
 
