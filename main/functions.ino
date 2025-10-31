@@ -25,18 +25,6 @@ void drawArrow(int textX, int textY) {
     ST77XX_RED);
 }
 //-------------------------------------------//
-void knobCallback(long value) {
-  scaledValue = 0;
-  scaledValue = value * 5;
-  rawValue = scaledValue/5;
-  Serial.println(scaledValue);
-}
-//-------------------------------------------//
-void buttonCallback(unsigned long duration) {
-  button_duration = duration;
-  Serial.println(duration);
-}
-//-------------------------------------------//
 void clearArrow(int textX, int textY) {
   int arrowTipX = textX - 10;
   int arrowTipY = textY + 12;
@@ -47,7 +35,14 @@ void clearArrow(int textX, int textY) {
     arrowTipX, arrowTipY,
     arrowTipX - size, arrowTipY - size,
     arrowTipX - size, arrowTipY + size,
-    ST77XX_BLACK); // Hintergrundfarbe
+    ST77XX_BLACK);  // Hintergrundfarbe
+}
+//-------------------------------------------//
+void knobCallback(long value) {
+  scaledValue = 0;
+  scaledValue = value * 5;
+  rawValue = scaledValue / 5;
+  //Serial.println(scaledValue);
 }
 //-------------------------------------------//
 void updateArrow(int selectionMenu) {
@@ -61,5 +56,12 @@ void updateArrow(int selectionMenu) {
     else if (selectionMenu == 1) drawArrow(30, 95);
 
     lastSelection = selectionMenu;
+  }
+}
+//-------------------------------------------//
+void updateButton() {
+  if (debounce > 20) {
+    ok_button = digitalRead(DI_ENCODER_SW);
+    debounce = 0;
   }
 }

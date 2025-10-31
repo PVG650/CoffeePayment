@@ -22,7 +22,9 @@ bool restartRequested = false;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
+elapsedMillis devounce;
 // StateMachine
+int current_state = 0;
 StateMachine machine = StateMachine();
 State* S1 = machine.addState(&state1);  // Idle, bitte keytag auflegen
 State* S2 = machine.addState(&state2);  // Modus auswählen
@@ -47,6 +49,7 @@ MFRC522 mfrc522{ driver };
 bool cardPresent = 0;
 uint64_t uidDec = 0;
 // Encoder
+bool ok_button;
 long rawValue = 0;
 long scaledValue = 0;
 unsigned long button_duration;
@@ -114,10 +117,14 @@ void loop() {
   }
   machine.run();
   readRFID();
+  updateButton();
   if (monitor > 250) {
-    Serial.println(uidDec);
-    Serial.println(cardPresent);
-    Serial.println(button_duration);
+    //Serial.println(uidDec);
+    //Serial.println(cardPresent);
+    Serial.print("button: ");
+    Serial.println(ok_button);
+    Serial.print("selectionMenu: ");
+    Serial.println(selectionMenu);
     monitor = 0;
   }
 }
