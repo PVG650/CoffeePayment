@@ -17,12 +17,14 @@
 
 // General
 bool selectionMenu = 0;
-
+int lastSelection = -1;
+bool restartRequested = false;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
 // StateMachine
 StateMachine machine = StateMachine();
+State* S1 = machine.addState(&state1);  // Idle, bitte keytag auflegen
 State* S2 = machine.addState(&state2);  // Modus auswählen
 State* S3 = machine.addState(&state3);  // Bezug
 State* S4 = machine.addState(&state4);  // Aufladen
@@ -70,7 +72,7 @@ void setup() {
   Serial.println("SD-Karte erkannt");
   // Rotary Encoder
   rotaryEncoder.setEncoderType(EncoderType::HAS_PULLUP);
-  rotaryEncoder.setBoundaries(0, 50, false);
+  rotaryEncoder.setBoundaries(-1000, 1000, false);
   rotaryEncoder.onTurned(&knobCallback);
   rotaryEncoder.onPressed(&buttonCallback);
   rotaryEncoder.begin();
@@ -89,26 +91,29 @@ void setup() {
   // RFID
   mfrc522.PCD_Init();
   // State Machine
+  S1->addTransition(&transitionS1S2, S2);  // Vom Idle zum Menü
   S2->addTransition(&transitionS2S3, S3);  // Vom Menü zum Bezug
   S2->addTransition(&transitionS2S4, S4);  // Vom Menü zum Laden
   S3->addTransition(&transitionS3S2, S2);  // Wenn Bezug abgeschlossen zurück zum Menü
   S4->addTransition(&transitionS4S5, S5);  // Vom Aufladen zum Bestätigen
   S5->addTransition(&transitionS5S2, S2);  // Vom Aufladen bestätigen zurück zum Menü
+  // Transitionen von allen Zuständen zurück zu S1
+  S2->addTransition(transitionS2S1, S1);
+  S3->addTransition(transitionS3S1, S1);
+  S4->addTransition(transitionS4S1, S1);
+  S5->addTransition(transitionS5S1, S1);
 }
 
 // ------------------------ //
 
 void loop() {
-  if (cardPresent) {
-    machine.run();
+  if (!cardPresent) {  // Beim Abziehen der Karte: Transition auf S1 egal von wo
+    restartRequested = true;
   } else {
-    tft.setTextSize(2);
-    tft.setCursor(30, 60);
-    tft.print("BITTE KEYTAG AUFLEGEN");
+    restartRequested = false;
   }
-
+  machine.run();
   readRFID();
-
   if (monitor > 250) {
     Serial.println(uidDec);
     Serial.println(cardPresent);

@@ -36,3 +36,30 @@ void buttonCallback(unsigned long duration) {
   button_duration = duration;
   Serial.println(duration);
 }
+//-------------------------------------------//
+void clearArrow(int textX, int textY) {
+  int arrowTipX = textX - 10;
+  int arrowTipY = textY + 12;
+  int size = 8;
+
+  // Gleiche Koordinaten wie drawArrow, aber mit Hintergrundfarbe
+  tft.fillTriangle(
+    arrowTipX, arrowTipY,
+    arrowTipX - size, arrowTipY - size,
+    arrowTipX - size, arrowTipY + size,
+    ST77XX_BLACK); // Hintergrundfarbe
+}
+//-------------------------------------------//
+void updateArrow(int selectionMenu) {
+  if (selectionMenu != lastSelection) {
+    // Alten Pfeil löschen
+    if (lastSelection == 0) clearArrow(30, 60);
+    else if (lastSelection == 1) clearArrow(30, 95);
+
+    // Neuen Pfeil zeichnen
+    if (selectionMenu == 0) drawArrow(30, 60);
+    else if (selectionMenu == 1) drawArrow(30, 95);
+
+    lastSelection = selectionMenu;
+  }
+}
