@@ -15,17 +15,20 @@
 
 // ------------------------- //
 
+// General
+bool selectionMenu = 0;
+
 // Timer
 elapsedMillis timerRFID;
+elapsedMillis monitor;
 // StateMachine
 StateMachine machine = StateMachine();
-State* S1 = machine.addState(&state1);  // Bitte Chip auflegen
 State* S2 = machine.addState(&state2);  // Modus auswählen
 State* S3 = machine.addState(&state3);  // Bezug
 State* S4 = machine.addState(&state4);  // Aufladen
 State* S5 = machine.addState(&state5);  // Aufladen bestätigen
 // SPI
-SPIClass spiBus(HSPI); // SPI 1 für RFID und Display
+SPIClass spiBus(HSPI);  // SPI 1 für RFID und Display
 // Display
 #define TFT_CS 15
 #define TFT_DC 16
@@ -42,6 +45,9 @@ MFRC522 mfrc522{ driver };
 bool cardPresent = 0;
 uint64_t uidDec = 0;
 // Encoder
+long rawValue = 0;
+long scaledValue = 0;
+unsigned long button_duration;
 const uint8_t DI_ENCODER_A = 41;
 const uint8_t DI_ENCODER_B = 40;
 const int8_t DI_ENCODER_SW = 42;
@@ -83,17 +89,30 @@ void setup() {
   // RFID
   mfrc522.PCD_Init();
   // State Machine
-  S1->addTransition(&transitionS1S2, S2);  // Wenn der Encoder gedreht wird
-  S2->addTransition(&transitionS2S1, S1);  // Wenn Timeout 10s
-  S1->addTransition(&transitionS1S4, S4);  // Wenn Mahlknopf gedrückt
-  S2->addTransition(&transitionS2S3, S3);  // Wenn OK gedrückt
-  S3->addTransition(&transitionS3S1, S1);  // Wenn OK gedrückt oder 30s Timeout
-  S4->addTransition(&transitionS4S1, S1);  // Nach Ablauf Mahlzeit zurück
+  S2->addTransition(&transitionS2S3, S3);  // Vom Menü zum Bezug
+  S2->addTransition(&transitionS2S4, S4);  // Vom Menü zum Laden
+  S3->addTransition(&transitionS3S2, S2);  // Wenn Bezug abgeschlossen zurück zum Menü
+  S4->addTransition(&transitionS4S5, S5);  // Vom Aufladen zum Bestätigen
+  S5->addTransition(&transitionS5S2, S2);  // Vom Aufladen bestätigen zurück zum Menü
 }
 
 // ------------------------ //
 
 void loop() {
-  machine.run();
-  updateButtons();
+  if (cardPresent) {
+    machine.run();
+  } else {
+    tft.setTextSize(2);
+    tft.setCursor(30, 60);
+    tft.print("BITTE KEYTAG AUFLEGEN");
+  }
+
+  readRFID();
+
+  if (monitor > 250) {
+    Serial.println(uidDec);
+    Serial.println(cardPresent);
+    Serial.println(button_duration);
+    monitor = 0;
+  }
 }
