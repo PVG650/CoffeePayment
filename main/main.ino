@@ -22,7 +22,7 @@ bool restartRequested = false;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
-elapsedMillis devounce;
+elapsedMillis debounce;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -56,7 +56,7 @@ unsigned long button_duration;
 const uint8_t DI_ENCODER_A = 41;
 const uint8_t DI_ENCODER_B = 40;
 const int8_t DI_ENCODER_SW = 42;
-RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B, DI_ENCODER_SW);
+RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B);
 
 // ------------------------ //
 
@@ -77,8 +77,9 @@ void setup() {
   rotaryEncoder.setEncoderType(EncoderType::HAS_PULLUP);
   rotaryEncoder.setBoundaries(-1000, 1000, false);
   rotaryEncoder.onTurned(&knobCallback);
-  rotaryEncoder.onPressed(&buttonCallback);
   rotaryEncoder.begin();
+  pinMode(DI_ENCODER_SW, INPUT);
+
   // Database
   //testTable.printSDstatus();  //[optional] print the initialization status of SD card
   //testTable.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.

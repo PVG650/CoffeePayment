@@ -51,14 +51,14 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
 }
 bool transitionS2S3() {
   //if (selectionMenu == 0 && buttonCallback()>50) {
-  if (selectionMenu == 0 && 1 == 0) {
+  if (selectionMenu == 0 && ok_button) {
     return true;
   }
   return false;
 }
 bool transitionS2S4() {
   //if (selectionMenu == 0 && buttonCallback()>50) {
-  if (selectionMenu == 1 && 1 == 0) {
+  if (selectionMenu == 1 && ok_button) {
     return true;
   }
   return false;
