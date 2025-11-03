@@ -2,7 +2,7 @@
 void readRFID() {
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
     uidDec = 0;
-    for (byte i = 0; i < mfrc522.uid.size; i++) {
+    for (byte i = mfrc522.uid.size - 2; i < mfrc522.uid.size; i++) {
       uidDec = (uidDec << 8) | mfrc522.uid.uidByte[i];
     }
     timerRFID = 0;
@@ -43,6 +43,22 @@ void knobCallback(long value) {
   scaledValue = value * 5;
   rawValue = scaledValue / 5;
   //Serial.println(scaledValue);
+  if (current_state == 4) {
+    tft.fillScreen(ST77XX_BLACK);
+    tft.setTextSize(1);
+    tft.setCursor(5, 5);
+    tft.print("SALDO NUTZER-NR 0:");
+    tft.setTextSize(2);
+    tft.setCursor(5, 20);
+    tft.print("6,50 EUR");
+    tft.setTextSize(2);
+    tft.setCursor(10, 60);
+    tft.print("Aufladen um:");
+    tft.setCursor(10, 80);
+    tft.print(scaledValue);
+    tft.setCursor(50, 80);
+    tft.print("EUR");
+  }
 }
 //-------------------------------------------//
 void updateArrow(int selectionMenu) {
@@ -65,3 +81,4 @@ void updateButton() {
     debounce = 0;
   }
 }
+//-------------------------------------------//

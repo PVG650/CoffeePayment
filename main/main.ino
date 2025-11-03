@@ -19,10 +19,14 @@
 bool selectionMenu = 0;
 int lastSelection = -1;
 bool restartRequested = false;
+int i = 0;
+bool foundUID = false;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
 elapsedMillis debounce;
+elapsedMillis stateJump;
+elapsedMillis bezug;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -41,13 +45,14 @@ Adafruit_ST7735 tft = Adafruit_ST7735(&spiBus, TFT_CS, TFT_DC, TFT_RST);
 // SD Card
 #define SD_CS 5
 MyTable db("keytags.csv");
+int numRows;
 // RFID
 #define RFID_CS 4
 MFRC522DriverPinSimple rfid_cs_pin(RFID_CS);
 MFRC522DriverSPI driver{ rfid_cs_pin, spiBus };
 MFRC522 mfrc522{ driver };
 bool cardPresent = 0;
-uint64_t uidDec = 0;
+int uidDec = 0;
 // Encoder
 bool ok_button;
 long rawValue = 0;
@@ -82,12 +87,12 @@ void setup() {
 
   // Database
   //testTable.printSDstatus();  //[optional] print the initialization status of SD card
-  //testTable.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
-  db.begin(4, 1);  //[optional] initialize an empty table with 3 rows and 2 columns (has no effect if table is not empty)
+  db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
+  db.begin(1, 4);  //[optional] initialize an empty table with x rows and y columns (has no effect if table is not empty)
   db.writeCell(0, 0, "ID");
-  db.writeCell(1, 0, "NAME");
-  db.writeCell(2, 0, "SALDO");
-  db.writeCell(3, 0, "COUNTER");
+  db.writeCell(0, 1, "NAME");
+  db.writeCell(0, 2, "SALDO");
+  db.writeCell(0, 3, "COUNTER");
   // Display
   tft.initR(INITR_BLACKTAB);
   tft.setRotation(1);  // Querformat: 160x128
@@ -122,10 +127,10 @@ void loop() {
   if (monitor > 250) {
     //Serial.println(uidDec);
     //Serial.println(cardPresent);
-    Serial.print("button: ");
-    Serial.println(ok_button);
-    Serial.print("selectionMenu: ");
-    Serial.println(selectionMenu);
+    // Serial.print("button: ");
+    // Serial.println(ok_button);
+    // Serial.print("selectionMenu: ");
+    // Serial.println(selectionMenu);
     monitor = 0;
   }
 }
