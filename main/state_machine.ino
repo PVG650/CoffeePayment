@@ -26,21 +26,22 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     current_state = 2;
     foundUID = false;
     numRows = db.countRows();
-    for (i = 1; i < numRows; ++i) {
-      if (db.readCell(0, i).toInt() == uidDec) {
+    for (i = 1; i < numRows; ++i) { // Nach Nutzer suchen
+      if (db.readCell(i, 0).toInt() == uidDec) {
         Serial.print("ID: ");
-        Serial.println(db.readCell(0, i));
+        Serial.println(db.readCell(i, 0));
         Serial.print("Zeile: ");
         Serial.println(i);
+        nutzerNummer = i; // Zeile in der der Nutzer gefunden wurde. Beginnt in Zeile 1 weil Zeile 0 der Header ist
         foundUID = true;
       }
     }
-    if (i == numRows && !foundUID) {
+    if (i == numRows && !foundUID) { // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
       db.appendEmptyRow();
       numRows = db.countRows();
-      db.writeCell(0, numRows - 1, uidDec);
+      db.writeCell(numRows - 1, 0, uidDec);
       Serial.print("NEUE ID GESCHRIEBEN: ");
-      Serial.println(db.readCell(0, numRows - 1).toInt());
+      Serial.println(db.readCell(numRows - 1,0).toInt());
       Serial.print("uidDec real: ");
       Serial.println(uidDec);
       Serial.print("numRows: ");

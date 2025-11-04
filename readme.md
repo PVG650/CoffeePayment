@@ -29,3 +29,8 @@
 | MISO   | 37   |
 | MOSI   | 35   |
 
+## Aufbau der Datenbank
+
+| ID  | NAME       | SALDO   | COUNTER |
+|-----|------------|---------|---------|
+| 1234   | Max Mustermann | 20.50  | 3456       |
