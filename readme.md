@@ -36,7 +36,9 @@
 | 1234   | Max Mustermann | 20.50  | 3456       |
 
 ## Aufbau State Machine
-<details> <summary>Mermaid-Code</summary>
+## Aufbau State Machine
+
+```mermaid
 stateDiagram-v2
     [*] --> S1
     S1: warten auf scan
@@ -54,4 +56,4 @@ stateDiagram-v2
 
     S5: aufladen bestätigen
     S5 --> S2
-</details>
+
