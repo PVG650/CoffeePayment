@@ -37,7 +37,7 @@
 
 ## Aufbau State Machine
 
-stateDiagram
+stateDiagram-v2
     [*] --> S1
     S1: warten auf scan
     S1 --> S2
@@ -54,3 +54,4 @@ stateDiagram
 
     S5: aufladen bestätigen
     S5 --> S2
+
