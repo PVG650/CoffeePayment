@@ -34,3 +34,23 @@
 | ID  | NAME       | SALDO   | COUNTER |
 |-----|------------|---------|---------|
 | 1234   | Max Mustermann | 20.50  | 3456       |
+
+## Aufbau State Machine
+
+stateDiagram
+    [*] --> S1
+    S1: warten auf scan
+    S1 --> S2
+
+    S2: modus auswahl
+    S2 --> S3
+    S2 --> S4
+
+    S3: bezug
+    S3 --> S2
+
+    S4: aufladen
+    S4 --> S5
+
+    S5: aufladen bestätigen
+    S5 --> S2

@@ -22,6 +22,7 @@ bool restartRequested = false;
 int i = 0;
 bool foundUID = false;
 int nutzerNummer = 9999;
+float saldo = 9999;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;

@@ -26,35 +26,36 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     current_state = 2;
     foundUID = false;
     numRows = db.countRows();
-    for (i = 1; i < numRows; ++i) { // Nach Nutzer suchen
+    for (i = 1; i < numRows; ++i) {  // Nach Nutzer suchen
       if (db.readCell(i, 0).toInt() == uidDec) {
-        Serial.print("ID: ");
-        Serial.println(db.readCell(i, 0));
-        Serial.print("Zeile: ");
-        Serial.println(i);
-        nutzerNummer = i; // Zeile in der der Nutzer gefunden wurde. Beginnt in Zeile 1 weil Zeile 0 der Header ist
+        nutzerNummer = i;  // Zeile in der der Nutzer gefunden wurde. Beginnt in Zeile 1 weil Zeile 0 der Header ist
         foundUID = true;
       }
     }
-    if (i == numRows && !foundUID) { // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
+    if (i == numRows && !foundUID) {  // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
       db.appendEmptyRow();
       numRows = db.countRows();
       db.writeCell(numRows - 1, 0, uidDec);
       Serial.print("NEUE ID GESCHRIEBEN: ");
-      Serial.println(db.readCell(numRows - 1,0).toInt());
-      Serial.print("uidDec real: ");
-      Serial.println(uidDec);
-      Serial.print("numRows: ");
-      Serial.println(numRows);
+    }
+    saldo = db.readCell(nutzerNummer, 2).toFloat();
+    if (db.readCell(nutzerNummer, 1).length() < 0) {  // Wenn kein Name eingetragen wurde abbruch
+      Serial.println("Noch kein Name vorhanden");
+    } else {
+      Serial.println(db.readCell(nutzerNummer, 1));
     }
     // Header: Nutzer-Nr und Saldo
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     tft.setCursor(5, 5);
-    tft.print("SALDO NUTZER-NR 0:");
+    tft.print("SALDO");
+    tft.setCursor(5, 15);
+    tft.print(db.readCell(nutzerNummer, 1));
     tft.setTextSize(2);
     tft.setCursor(5, 20);
-    tft.print("6,50 EUR");
+    tft.print(saldo);
+    tft.setCursor(5, 30);
+    tft.print("EUR");
     // Menü
     tft.setTextSize(3);
     tft.setCursor(30, 60);
