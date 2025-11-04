@@ -39,18 +39,22 @@ void clearArrow(int textX, int textY) {
 }
 //-------------------------------------------//
 void knobCallback(long value) {
-  scaledValue = 0;
-  scaledValue = value * 5;
+  scaledValue = 0.0;
+  scaledValue = value * 5.0;
   rawValue = scaledValue / 5;
   //Serial.println(scaledValue);
   if (current_state == 4) {
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     tft.setCursor(5, 5);
-    tft.print("SALDO NUTZER-NR 0:");
+    tft.print("SALDO");
+    tft.setCursor(40, 5);
+    tft.print(db.readCell(nutzerNummer, 1));
     tft.setTextSize(2);
     tft.setCursor(5, 20);
-    tft.print("6,50 EUR");
+    tft.print(saldo);
+    tft.setCursor(70, 20);
+    tft.print("EUR");
     tft.setTextSize(2);
     tft.setCursor(10, 60);
     tft.print("Aufladen um:");

@@ -36,10 +36,10 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
       db.appendEmptyRow();
       numRows = db.countRows();
       db.writeCell(numRows - 1, 0, uidDec);
-      Serial.print("NEUE ID GESCHRIEBEN: ");
+      Serial.println("NEUE ID GESCHRIEBEN");
     }
     saldo = db.readCell(nutzerNummer, 2).toFloat();
-    if (db.readCell(nutzerNummer, 1).length() < 0) {  // Wenn kein Name eingetragen wurde abbruch
+    if (db.readCell(nutzerNummer, 1).length() < 1) {  // Wenn kein Name eingetragen wurde abbruch
       Serial.println("Noch kein Name vorhanden");
     } else {
       Serial.println(db.readCell(nutzerNummer, 1));
@@ -49,12 +49,12 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     tft.setTextSize(1);
     tft.setCursor(5, 5);
     tft.print("SALDO");
-    tft.setCursor(5, 15);
+    tft.setCursor(40, 5);
     tft.print(db.readCell(nutzerNummer, 1));
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
-    tft.setCursor(5, 30);
+    tft.setCursor(70, 20);
     tft.print("EUR");
     // Menü
     tft.setTextSize(3);
@@ -124,13 +124,18 @@ void state4() {  // Aufladen
   if (machine.executeOnce) {
     current_state = 4;
     rotaryEncoder.setBoundaries(0, 10, false);
+    // Header: Nutzer-Nr und Saldo
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     tft.setCursor(5, 5);
-    tft.print("SALDO NUTZER-NR 0:");
+    tft.print("SALDO");
+    tft.setCursor(40, 5);
+    tft.print(db.readCell(nutzerNummer, 1));
     tft.setTextSize(2);
     tft.setCursor(5, 20);
-    tft.print("6,50 EUR");
+    tft.print(saldo);
+    tft.setCursor(70, 20);
+    tft.print("EUR");
     tft.setTextSize(2);
     tft.setCursor(10, 60);
     tft.print("Aufladen um:");
@@ -138,6 +143,7 @@ void state4() {  // Aufladen
 }
 bool transitionS4S5() {
   if (ok_button && stateJump > 2000) {
+    db.writeCell(nutzerNummer, 2, saldo+scaledValue);
     rotaryEncoder.setBoundaries(-1000, 1000, false);
     return true;
   }

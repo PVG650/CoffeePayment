@@ -22,7 +22,7 @@ bool restartRequested = false;
 int i = 0;
 bool foundUID = false;
 int nutzerNummer = 9999;
-float saldo = 9999;
+float saldo = 9999.0;
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
@@ -58,7 +58,7 @@ int uidDec = 0;
 // Encoder
 bool ok_button;
 long rawValue = 0;
-long scaledValue = 0;
+float scaledValue = 0.0;
 unsigned long button_duration;
 const uint8_t DI_ENCODER_A = 41;
 const uint8_t DI_ENCODER_B = 40;
