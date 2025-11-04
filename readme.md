@@ -41,19 +41,19 @@
 ```mermaid
 stateDiagram-v2
     [*] --> S1
-    S1: warten auf scan
+    S1: WARTEN AUF SCAN (S1)
     S1 --> S2
 
-    S2: modus auswahl
+    S2: MODUS AUSWAHL (S2)
     S2 --> S3
     S2 --> S4
 
-    S3: bezug
+    S3: BEZUG (S3)
     S3 --> S2
 
-    S4: aufladen
+    S4: AUFLADEN (S4)
     S4 --> S5
 
-    S5: aufladen bestätigen
+    S5: AUFLADEN BESTÄTIGEN (S5)
     S5 --> S2
 
