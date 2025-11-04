@@ -49,7 +49,7 @@ void knobCallback(long value) {
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(db.readCell(nutzerNummer, 1));
+    tft.print(name);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
@@ -60,7 +60,7 @@ void knobCallback(long value) {
     tft.print("Aufladen um:");
     tft.setCursor(10, 80);
     tft.print(scaledValue);
-    tft.setCursor(50, 80);
+    tft.setCursor(80, 80);
     tft.print("EUR");
   }
 }

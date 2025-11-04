@@ -23,6 +23,7 @@ int i = 0;
 bool foundUID = false;
 int nutzerNummer = 9999;
 float saldo = 9999.0;
+String name = "UNBEKANNT";
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;

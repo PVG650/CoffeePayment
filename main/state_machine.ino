@@ -38,11 +38,14 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
       db.writeCell(numRows - 1, 0, uidDec);
       Serial.println("NEUE ID GESCHRIEBEN");
     }
+
     saldo = db.readCell(nutzerNummer, 2).toFloat();
+    name = db.readCell(nutzerNummer, 1);
+
     if (db.readCell(nutzerNummer, 1).length() < 1) {  // Wenn kein Name eingetragen wurde abbruch
       Serial.println("Noch kein Name vorhanden");
     } else {
-      Serial.println(db.readCell(nutzerNummer, 1));
+      Serial.println(name);
     }
     // Header: Nutzer-Nr und Saldo
     tft.fillScreen(ST77XX_BLACK);
@@ -50,7 +53,7 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(db.readCell(nutzerNummer, 1));
+    tft.print(name);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
@@ -130,7 +133,7 @@ void state4() {  // Aufladen
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(db.readCell(nutzerNummer, 1));
+    tft.print(name);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
