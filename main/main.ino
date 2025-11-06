@@ -16,6 +16,7 @@
 // ------------------------- //
 
 // General
+float preis = 0.50;
 bool selectionMenu = 0;
 int lastSelection = -1;
 bool restartRequested = false;
@@ -23,13 +24,15 @@ int i = 0;
 bool foundUID = false;
 int nutzerNummer = 9999;
 float saldo = 9999.0;
-String name = "UNBEKANNT";
+float ladebetrag = 9999.0;
+//String name = "UNBEKANNT";
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
 elapsedMillis debounce;
 elapsedMillis stateJump;
 elapsedMillis bezug;
+elapsedMillis aufladebestaetigung;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -71,10 +74,11 @@ RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B);
 void setup() {
   // Serial Monitor
   Serial.begin(115200);
-  delay(100);
+  delay(200);
   Serial.println("Serial i.O.");
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
   SPI.begin();               // GPIO 12=SCK, 13=MISO, 11=MOSI for SD Card (SPI 2)
+  delay(200);
   // SD Card
   if (!SD.begin(SD_CS)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");

@@ -26,34 +26,45 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     current_state = 2;
     foundUID = false;
     numRows = db.countRows();
+    Serial.print("numRows: ");
+    Serial.println(numRows);
     for (i = 1; i < numRows; ++i) {  // Nach Nutzer suchen
       if (db.readCell(i, 0).toInt() == uidDec) {
         nutzerNummer = i;  // Zeile in der der Nutzer gefunden wurde. Beginnt in Zeile 1 weil Zeile 0 der Header ist
         foundUID = true;
       }
     }
+    Serial.print("i: ");
+    Serial.println(i);
+    Serial.print("foundUID: ");
+    Serial.println(foundUID);
     if (i == numRows && !foundUID) {  // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
       db.appendEmptyRow();
       numRows = db.countRows();
+      Serial.print("numRows2: ");
+      Serial.println(numRows);
       db.writeCell(numRows - 1, 0, uidDec);
-      Serial.println("NEUE ID GESCHRIEBEN");
+      nutzerNummer = numRows - 1;
+      Serial.println("!!!!!!!!!!!!NEUE ID GESCHRIEBEN!!!!!!!!!!!!!");
     }
 
     saldo = db.readCell(nutzerNummer, 2).toFloat();
-    name = db.readCell(nutzerNummer, 1);
+    Serial.println(saldo);
+    //name = db.readCell(nutzerNummer, 1);
 
-    if (db.readCell(nutzerNummer, 1).length() < 1) {  // Wenn kein Name eingetragen wurde abbruch
-      Serial.println("Noch kein Name vorhanden");
-    } else {
-      Serial.println(name);
-    }
+    // if (db.readCell(nutzerNummer, 1).length() < 1) {  // Wenn kein Name eingetragen wurde abbruch
+    //   Serial.println("Noch kein Name vorhanden");
+    // } else {
+    //   Serial.println(name);
+    // }
+
     // Header: Nutzer-Nr und Saldo
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(name);
+    tft.print(nutzerNummer);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
@@ -77,7 +88,6 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
   updateArrow(selectionMenu);
 }
 bool transitionS2S3() {
-  //if (selectionMenu == 0 && buttonCallback()>50) {
   if (selectionMenu == 0 && ok_button) {
     bezug = 0;  // timer für die Dauer des "state: bezug" starten
     return true;
@@ -85,8 +95,8 @@ bool transitionS2S3() {
   return false;
 }
 bool transitionS2S4() {
-  //if (selectionMenu == 0 && buttonCallback()>50) {
   if (selectionMenu == 1 && ok_button) {
+    rotaryEncoder.setEncoderValue(0);
     stateJump = 0;  // Verhindert, dass wir mit dem aktuellen "OK" den nächsten State direkt überspringen
     return true;
   }
@@ -102,12 +112,18 @@ bool transitionS2S1() {
 void state3() {  // Kaffeebezug
   if (machine.executeOnce) {
     current_state = 3;
+    saldo = saldo - preis;
+    db.writeCell(nutzerNummer, 2, String(saldo,2));
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(2);
-    tft.setCursor((160 - 3 * 12) / 2, 40);  // "..." → 3 Zeichen * 12px bei TextSize 2
+    tft.setCursor(62, 40);
     tft.print("...");
-    tft.setCursor((160 - 8 * 12) / 2, 80);  // "-0,25 EUR" → 8 Zeichen * 12px
-    tft.print("-0,25 EUR");
+    tft.setCursor(30, 80);
+    tft.print("-");
+    tft.setCursor(45, 80);
+    tft.print(preis);
+    tft.setCursor(100, 80);
+    tft.print("EUR");
   }
 }
 bool transitionS3S2() {
@@ -126,14 +142,14 @@ bool transitionS3S1() {
 void state4() {  // Aufladen
   if (machine.executeOnce) {
     current_state = 4;
-    rotaryEncoder.setBoundaries(0, 10, false);
+    rotaryEncoder.setBoundaries(0, 4, false);
     // Header: Nutzer-Nr und Saldo
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(name);
+    tft.print(nutzerNummer);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
@@ -146,7 +162,9 @@ void state4() {  // Aufladen
 }
 bool transitionS4S5() {
   if (ok_button && stateJump > 2000) {
-    db.writeCell(nutzerNummer, 2, saldo+scaledValue);
+    ladebetrag = scaledValue;
+    db.writeCell(nutzerNummer, 2, saldo + ladebetrag);
+    saldo = saldo + ladebetrag;
     rotaryEncoder.setBoundaries(-1000, 1000, false);
     return true;
   }
@@ -162,12 +180,27 @@ bool transitionS4S1() {
 //--------------------------STATE 5----------------------------//
 void state5() {  // Aufladen bestätigen
   if (machine.executeOnce) {
+    aufladebestaetigung = 0;
     current_state = 5;
     tft.fillScreen(ST77XX_BLACK);
+    tft.setTextSize(1);
+    // Zeile 1: ladebetrag + " EUR AUFGELADEN"
+    tft.setCursor(16, 30);  // Zentriert für ca. 13 Zeichen
+    tft.print(ladebetrag, 2);
+    tft.print(" EUR AUFGELADEN");
+    tft.setTextSize(2);
+    // Zeile 2: "SALDO NEU:"
+    tft.setCursor(16, 60);  // Zentriert für 10 Zeichen
+    tft.print("SALDO NEU:");
+
+    // Zeile 3: saldo-Wert
+    tft.setCursor(16, 90);  // Zentriert für ca. 9 Zeichen
+    tft.print(saldo, 2);
+    tft.print(" EUR");
   }
 }
 bool transitionS5S2() {
-  if (0 == 1) {
+  if (aufladebestaetigung > 5000) {
     return true;
   }
   return false;

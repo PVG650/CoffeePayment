@@ -49,7 +49,7 @@ void knobCallback(long value) {
     tft.setCursor(5, 5);
     tft.print("SALDO");
     tft.setCursor(40, 5);
-    tft.print(name);
+    tft.print(nutzerNummer);
     tft.setTextSize(2);
     tft.setCursor(5, 20);
     tft.print(saldo);
