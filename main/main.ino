@@ -37,6 +37,7 @@ elapsedMillis debounce;
 elapsedMillis stateJump;
 elapsedMillis bezug;
 elapsedMillis aufladebestaetigung;
+elapsedMillis t_relais;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -100,7 +101,7 @@ void setup() {
   pinMode(PIN_PC817, INPUT_PULLUP);
   //Relais
   pinMode(PIN_RELAIS, OUTPUT);
-      digitalWrite(PIN_RELAIS, LOW);
+  digitalWrite(PIN_RELAIS, LOW);
   // Database
   //db.printSDstatus();  //[optional] print the initialization status of SD card
   //db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
