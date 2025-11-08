@@ -55,5 +55,7 @@ stateDiagram-v2
 
     S5: AUFLADEN BESTÄTIGEN (S5)
     S5 --> S2
+```
+
 ## Schaltung Optokoppler (STATE LED ON/OFF)
 ![Optokoppler-Schaltung](src/images/optokoppler.png)
