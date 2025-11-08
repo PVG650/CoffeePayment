@@ -28,6 +28,8 @@ float ladebetrag = 9999.0;
 //String name = "UNBEKANNT";
 // Optokoppler
 #define PIN_PC817 45
+//Relais
+#define PIN_RELAIS 48
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
@@ -96,7 +98,9 @@ void setup() {
 
   //Optokoppler
   pinMode(PIN_PC817, INPUT_PULLUP);
-
+  //Relais
+  pinMode(PIN_RELAIS, OUTPUT);
+      digitalWrite(PIN_RELAIS, LOW);
   // Database
   //db.printSDstatus();  //[optional] print the initialization status of SD card
   //db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.

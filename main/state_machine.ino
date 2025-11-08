@@ -89,8 +89,8 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
 }
 bool transitionS2S3() {
   if (selectionMenu == 0 && ok_button) {
-    bezug = 0;  // timer für die Dauer des "state: bezug" starten
-    if (!digitalRead(PIN_PC817)) { // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
+    bezug = 0;                      // timer für die Dauer des "state: bezug" starten
+    if (!digitalRead(PIN_PC817)) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
       return true;
     }
   }
@@ -114,6 +114,8 @@ bool transitionS2S1() {
 void state3() {  // Kaffeebezug
   if (machine.executeOnce) {
     current_state = 3;
+    t_relais = 0;
+    digitalWrite(PIN_RELAIS, HIGH);
     saldo = saldo - preis;
     db.writeCell(nutzerNummer, 2, String(saldo, 2));
     tft.fillScreen(ST77XX_BLACK);
@@ -127,15 +129,20 @@ void state3() {  // Kaffeebezug
     tft.setCursor(100, 80);
     tft.print("EUR");
   }
+  if (t_relais > 500) {
+    digitalWrite(PIN_RELAIS, LOW);
+  }
 }
 bool transitionS3S2() {
   if (bezug > 5000) {
+    digitalWrite(PIN_RELAIS, LOW);
     return true;
   }
   return false;
 }
 bool transitionS3S1() {
   if (restartRequested) {
+    digitalWrite(PIN_RELAIS, LOW);
     return true;
   }
   return false;
