@@ -36,7 +36,6 @@
 | 1234   | Max Mustermann | 20.50  | 3456       |
 
 ## Aufbau State Machine
-## Aufbau State Machine
 
 ```mermaid
 stateDiagram-v2
@@ -56,4 +55,5 @@ stateDiagram-v2
 
     S5: AUFLADEN BESTÄTIGEN (S5)
     S5 --> S2
-
+## Schaltung Optokoppler (STATE LED ON/OFF)
+![Optokoppler-Schaltung](src/images/optokoppler.png)

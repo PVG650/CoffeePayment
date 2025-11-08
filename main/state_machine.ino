@@ -90,7 +90,9 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
 bool transitionS2S3() {
   if (selectionMenu == 0 && ok_button) {
     bezug = 0;  // timer für die Dauer des "state: bezug" starten
-    return true;
+    if (!digitalRead(PIN_PC817)) { // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
+      return true;
+    }
   }
   return false;
 }
@@ -113,7 +115,7 @@ void state3() {  // Kaffeebezug
   if (machine.executeOnce) {
     current_state = 3;
     saldo = saldo - preis;
-    db.writeCell(nutzerNummer, 2, String(saldo,2));
+    db.writeCell(nutzerNummer, 2, String(saldo, 2));
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(2);
     tft.setCursor(62, 40);

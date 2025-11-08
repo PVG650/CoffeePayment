@@ -26,6 +26,8 @@ int nutzerNummer = 9999;
 float saldo = 9999.0;
 float ladebetrag = 9999.0;
 //String name = "UNBEKANNT";
+// Optokoppler
+#define PIN_PC817 45
 // Timer
 elapsedMillis timerRFID;
 elapsedMillis monitor;
@@ -91,6 +93,9 @@ void setup() {
   rotaryEncoder.onTurned(&knobCallback);
   rotaryEncoder.begin();
   pinMode(DI_ENCODER_SW, INPUT);
+
+  //Optokoppler
+  pinMode(PIN_PC817, INPUT_PULLUP);
 
   // Database
   //db.printSDstatus();  //[optional] print the initialization status of SD card
