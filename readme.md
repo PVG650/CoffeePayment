@@ -6,10 +6,10 @@
 |             | RS/DC        | GPIO 16 |
 |             | RST          | GPIO 7  |
 | **SD-Karte**| CS           | GPIO 5  |
-|	      | VDD          | 5V!     |
 | **ENCODER** | SW           | GPIO 42 |
 |             | DT ("B")     | GPIO 40 |
 |             | CLK ("A")    | GPIO 41 |
+| **RELAIS**  | GPIO         | 48      |
 
 ## SPI-Bus-Zuweisungen
 
