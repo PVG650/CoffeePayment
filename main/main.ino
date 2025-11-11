@@ -104,7 +104,7 @@ void setup() {
   digitalWrite(PIN_RELAIS, LOW);
   // Database
   //db.printSDstatus();  //[optional] print the initialization status of SD card
-  db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
+  //db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
   db.begin(1, 4);  //[optional] initialize an empty table with x rows and y columns (has no effect if table is not empty)
   db.writeCell(0, 0, "ID_LOW");
   db.writeCell(0, 1, "ID_HIGH");
