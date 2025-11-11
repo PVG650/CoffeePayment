@@ -2,7 +2,7 @@
 void readRFID() {
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
     uidDec = 0;
-    for (byte i = mfrc522.uid.size - 2; i < mfrc522.uid.size; i++) {
+    for (byte i = 0; i < mfrc522.uid.size; i++) {
       uidDec = (uidDec << 8) | mfrc522.uid.uidByte[i];
     }
     timerRFID = 0;

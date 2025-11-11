@@ -31,9 +31,9 @@
 
 ## Aufbau der Datenbank
 
-| ID  | NAME       | SALDO   | COUNTER |
+| ID_LOW  | ID_HIGH       | SALDO   | COUNTER |
 |-----|------------|---------|---------|
-| 1234   | Max Mustermann | 20.50  | 3456       |
+| 1234   | 5678 | 20.50  | 3456       |
 
 ## Aufbau State Machine
 

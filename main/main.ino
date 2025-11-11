@@ -63,7 +63,7 @@ MFRC522DriverPinSimple rfid_cs_pin(RFID_CS);
 MFRC522DriverSPI driver{ rfid_cs_pin, spiBus };
 MFRC522 mfrc522{ driver };
 bool cardPresent = 0;
-int uidDec = 0;
+uint64_t uidDec = 0;
 // Encoder
 bool ok_button;
 long rawValue = 0;
@@ -104,10 +104,10 @@ void setup() {
   digitalWrite(PIN_RELAIS, LOW);
   // Database
   //db.printSDstatus();  //[optional] print the initialization status of SD card
-  //db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
+  db.emptyTable();     //[optional] empty table content (make sure to call begin(rowN, colN) after emptying a table) // you could always add more rows.
   db.begin(1, 4);  //[optional] initialize an empty table with x rows and y columns (has no effect if table is not empty)
-  db.writeCell(0, 0, "ID");
-  db.writeCell(0, 1, "NAME");
+  db.writeCell(0, 0, "ID_LOW");
+  db.writeCell(0, 1, "ID_HIGH");
   db.writeCell(0, 2, "SALDO");
   db.writeCell(0, 3, "COUNTER");
   // Display
@@ -142,7 +142,7 @@ void loop() {
   readRFID();
   updateButton();
   if (monitor > 250) {
-    //Serial.println(uidDec);
+    Serial.println(uidDec);
     //Serial.println(cardPresent);
     // Serial.print("button: ");
     // Serial.println(ok_button);

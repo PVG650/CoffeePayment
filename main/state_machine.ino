@@ -26,24 +26,28 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     current_state = 2;
     foundUID = false;
     numRows = db.countRows();
-    Serial.print("numRows: ");
-    Serial.println(numRows);
     for (i = 1; i < numRows; ++i) {  // Nach Nutzer suchen
-      if (db.readCell(i, 0).toInt() == uidDec) {
+      double lowLong = db.readCell(i, 0).toDouble();
+      double highLong = db.readCell(i, 1).toDouble();
+      uint64_t storedUID = ((uint64_t)(uint32_t)highLong << 32) | (uint64_t)(uint32_t)lowLong;
+      if (storedUID == uidDec) {
         nutzerNummer = i;  // Zeile in der der Nutzer gefunden wurde. Beginnt in Zeile 1 weil Zeile 0 der Header ist
         foundUID = true;
       }
     }
-    Serial.print("i: ");
-    Serial.println(i);
     Serial.print("foundUID: ");
     Serial.println(foundUID);
-    if (i == numRows && !foundUID) {  // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
+    if (i == numRows && !foundUID) {                       // Neuen Nutzer anlegen wenn noch nicht in der Liste vorhanden
+      uint32_t lowPart = (uint32_t)(uidDec & 0xFFFFFFFF);  // Untere 32 Bits UID
+      uint32_t highPart = (uint32_t)(uidDec >> 32);        // Obere 32 Bits UID
+      long lowUID = (long)lowPart;
+      long highUID = (long)highPart;
       db.appendEmptyRow();
       numRows = db.countRows();
       Serial.print("numRows2: ");
       Serial.println(numRows);
-      db.writeCell(numRows - 1, 0, uidDec);
+      db.writeCell(numRows - 1, 0, lowUID);
+      db.writeCell(numRows - 1, 1, highUID);
       nutzerNummer = numRows - 1;
       Serial.println("!!!!!!!!!!!!NEUE ID GESCHRIEBEN!!!!!!!!!!!!!");
     }
@@ -209,7 +213,7 @@ void state5() {  // Aufladen bestätigen
   }
 }
 bool transitionS5S2() {
-  if (aufladebestaetigung > 5000) {
+  if (aufladebestaetigung > 3500) {
     return true;
   }
   return false;
