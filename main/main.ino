@@ -47,14 +47,18 @@ State* S3 = machine.addState(&state3);  // Bezug
 State* S4 = machine.addState(&state4);  // Aufladen
 State* S5 = machine.addState(&state5);  // Aufladen bestätigen
 // SPI
-SPIClass spiBus(HSPI);  // SPI 1 für RFID und Display
+SPIClass spiBus(HSPI);    // SPI 1 für RFID und Display
+SPIClass spiBusSD(FSPI);  // SPI 1 für RFID und Display
 // Display
 #define TFT_CS 15
 #define TFT_DC 16
 #define TFT_RST 7
 Adafruit_ST7735 tft = Adafruit_ST7735(&spiBus, TFT_CS, TFT_DC, TFT_RST);
 // SD Card
-#define SD_CS 5
+#define SD_CS 47
+#define SD_CLK 19
+#define SD_MISO 20
+#define SD_MOSI 21
 MyTable db("keytags.csv");
 int numRows;
 // RFID
@@ -79,13 +83,13 @@ RotaryEncoder rotaryEncoder(DI_ENCODER_A, DI_ENCODER_B);
 void setup() {
   // Serial Monitor
   Serial.begin(115200);
-  delay(200);
   Serial.println("Serial i.O.");
+  pinMode(SD_CS, OUTPUT);
+  digitalWrite(SD_CS, HIGH);
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
-  SPI.begin();               // GPIO 12=SCK, 13=MISO, 11=MOSI for SD Card (SPI 2)
-  delay(200);
+  spiBusSD.begin(SD_CLK, SD_MISO, SD_MOSI);
   // SD Card
-  if (!SD.begin(SD_CS)) {
+  if (!SD.begin(SD_CS, spiBusSD)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }
