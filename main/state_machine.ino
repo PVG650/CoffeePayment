@@ -121,7 +121,10 @@ void state3() {  // Kaffeebezug
     t_relais = 0;
     digitalWrite(PIN_RELAIS, HIGH);
     saldo = saldo - preis;
+    counter = db.readCell(nutzerNummer, 3).toInt();
+    counter = counter + 1;
     db.writeCell(nutzerNummer, 2, String(saldo, 2));
+    db.writeCell(nutzerNummer, 3, counter);
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(2);
     tft.setCursor(62, 40);

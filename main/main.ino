@@ -25,6 +25,7 @@ bool foundUID = false;
 int nutzerNummer = 9999;
 float saldo = 9999.0;
 float ladebetrag = 9999.0;
+int counter = 0;
 //String name = "UNBEKANNT";
 // Optokoppler
 #define PIN_PC817 45
