@@ -5,7 +5,7 @@
 | **DISPLAY** | CS           | GPIO 15 |
 |             | RS/DC        | GPIO 16 |
 |             | RST          | GPIO 7  |
-| **SD-Karte**| CS           | GPIO 5  |
+| **SD-Karte**| CS           | GPIO 47 |
 | **ENCODER** | SW           | GPIO 42 |
 |             | DT ("B")     | GPIO 40 |
 |             | CLK ("A")    | GPIO 41 |
@@ -17,9 +17,9 @@
 
 | Signal | GPIO |
 |--------|------|
-| SCK    | 12   |
-| MISO   | 13   |
-| MOSI   | 11   |
+| SCK    | 19   |
+| MISO   | 20   |
+| MOSI   | 21   |
 
 ### SPI für TFT & RFID
 
