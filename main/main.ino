@@ -48,7 +48,7 @@ State* S4 = machine.addState(&state4);  // Aufladen
 State* S5 = machine.addState(&state5);  // Aufladen bestätigen
 // SPI
 SPIClass spiBus(HSPI);    // SPI 1 für RFID und Display
-SPIClass spiBusSD(FSPI);  // SPI 1 für RFID und Display
+SPIClass spiSD(FSPI);  // SPI 1 für RFID und Display
 // Display
 #define TFT_CS 15
 #define TFT_DC 16
@@ -87,9 +87,9 @@ void setup() {
   pinMode(SD_CS, OUTPUT);
   digitalWrite(SD_CS, HIGH);
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
-  spiBusSD.begin(SD_CLK, SD_MISO, SD_MOSI);
+  spiSD.begin(SD_CLK, SD_MISO, SD_MOSI);
   // SD Card
-  if (!SD.begin(SD_CS, spiBusSD)) {
+  if (!SD.begin(SD_CS, spiSD)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }
