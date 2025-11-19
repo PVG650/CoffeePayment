@@ -204,6 +204,7 @@ void state4() {  // Aufladen
 bool transitionS4S5() {
   if (ok_button && stateJump > 2000) {
     saldo = saldo + (float)scaledValue;
+    ladebetrag = scaledValue;
     db.writeCell(nutzerNummer, 2, String(saldo, 2));
     rotaryEncoder.setBoundaries(-1000, 1000, false);
     return true;
