@@ -91,7 +91,7 @@ void setup() {
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
   spiSD.begin(SD_CLK, SD_MISO, SD_MOSI);
   // SD Card
-  if (!SD.begin(SD_CS, spiSD)) {
+  if (!SD.begin(SD_CS, spiSD,40000000)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }
