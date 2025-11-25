@@ -141,7 +141,7 @@ void state3() {  // Kaffeebezug
   }
 }
 bool transitionS3S2() {
-  if (bezug > 5000) {
+  if (bezug > 40000) {
     digitalWrite(PIN_RELAIS, LOW);
     return true;
   }
