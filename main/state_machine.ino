@@ -94,7 +94,7 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
 bool transitionS2S3() {
   if (selectionMenu == 0 && ok_button) {
     bezug = 0;                      // timer für die Dauer des "state: bezug" starten
-    if (!digitalRead(PIN_PC817)) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
+    if (machine_ready) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
       return true;
     }
   }

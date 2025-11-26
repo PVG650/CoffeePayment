@@ -26,6 +26,7 @@ int nutzerNummer = 9999;
 float saldo = 9999.0;
 float ladebetrag = 9999.0;
 int counter = 0;
+bool machine_ready = 0;
 //String name = "UNBEKANNT";
 // Optokoppler
 #define PIN_PC817 45
@@ -39,6 +40,7 @@ elapsedMillis stateJump;
 elapsedMillis bezug;
 elapsedMillis aufladebestaetigung;
 elapsedMillis t_relais;
+elapsedMillis powerLED;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -159,6 +161,7 @@ void loop() {
   machine.run();
   readRFID();
   updateButton();
+  machineReady();
   if (monitor > 250) {
     Serial.println(uidDec);
     //Serial.println(cardPresent);
