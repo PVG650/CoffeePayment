@@ -23,11 +23,11 @@
 
 ### SPI für TFT & RFID
 
-| Signal | GPIO |
-|--------|------|
-| SCK    | 36   |
-| MISO   | 37   |
-| MOSI   | 35   |
+| Signal     | GPIO |
+|------------|------|
+| SCK        | 36   |
+| MISO       | 37   |
+| MOSI (SDA) | 35   |
 
 ## Aufbau der Datenbank
 
