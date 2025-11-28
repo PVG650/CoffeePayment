@@ -94,7 +94,7 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
 bool transitionS2S3() {
   if (selectionMenu == 0 && ok_button) {
     bezug = 0;                      // timer für die Dauer des "state: bezug" starten
-    if (!digitalRead(PIN_PC817)) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
+    if (machine_ready) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
       return true;
     }
   }
@@ -141,7 +141,7 @@ void state3() {  // Kaffeebezug
   }
 }
 bool transitionS3S2() {
-  if (bezug > 5000) {
+  if (bezug > 40000) {
     digitalWrite(PIN_RELAIS, LOW);
     return true;
   }
@@ -179,6 +179,7 @@ void state4() {  // Aufladen
 bool transitionS4S5() {
   if (ok_button && stateJump > 2000) {
     saldo = saldo + (float)scaledValue;
+    ladebetrag = scaledValue;
     db.writeCell(nutzerNummer, 2, String(saldo, 2));
     rotaryEncoder.setBoundaries(-1000, 1000, false);
     return true;
@@ -200,22 +201,53 @@ void state5() {  // Aufladen bestätigen
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(1);
     // Zeile 1: ladebetrag + " EUR AUFGELADEN"
-    tft.setCursor(16, 30);  // Zentriert für ca. 13 Zeichen
+    tft.setCursor(16, 10);  // Zentriert für ca. 13 Zeichen
     tft.print(ladebetrag, 2);
     tft.print(" EUR AUFGELADEN");
     tft.setTextSize(2);
     // Zeile 2: "SALDO NEU:"
-    tft.setCursor(16, 60);  // Zentriert für 10 Zeichen
+    tft.setCursor(16, 40);  // Zentriert für 10 Zeichen
     tft.print("SALDO NEU:");
 
     // Zeile 3: saldo-Wert
-    tft.setCursor(16, 90);  // Zentriert für ca. 9 Zeichen
+    tft.setCursor(16, 70);  // Zentriert für ca. 9 Zeichen
     tft.print(saldo, 2);
     tft.print(" EUR");
+
+    /************************************************************************************************************************************************************
+          /////////////////////////////////////////////////////////////Update copy csv/////////////////////////////////////////////////////////////////////
+    ************************************************************************************************************************************************************/
+    // Backup CSV Datei aktualisieren
+    numRows = db.countRows();  // Aktuelle Anzahl der Zeilen ermitteln
+    dbcopy.emptyTable();       // Datei leeren
+    dbcopy.begin(numRows, 4);  // Backup-Datei mit korrekter Größe neu initialisieren
+    
+    tft.setCursor(16,100);
+    tft.print("SPEICHERN..");
+    // Header kopieren
+    for(int j = 0; j < 4; ++j) {
+      String header = db.readCell(0, j);
+      dbcopy.writeCell(0, j, header);
+    }
+    
+    // Daten Zeilenweise kopieren in Backup
+    for (int i = 1; i < numRows; ++i) {
+      for(int j = 0; j < 4; ++j) {
+        String spalte = db.readCell(i, j);
+        dbcopy.writeCell(i, j, spalte);
+      }
+    }
+    tft.fillScreen(ST77XX_BLACK);
+    tft.setCursor(16,60);
+    tft.print("GESPEICHERT!");
+    aufladebestaetigung = 0;
+    /************************************************************************************************************************************************************
+              //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ************************************************************************************************************************************************************/
   }
 }
 bool transitionS5S2() {
-  if (aufladebestaetigung > 3500) {
+  if (aufladebestaetigung > 1000) {
     return true;
   }
   return false;

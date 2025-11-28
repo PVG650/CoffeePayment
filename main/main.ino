@@ -26,6 +26,7 @@ int nutzerNummer = 9999;
 float saldo = 9999.0;
 float ladebetrag = 9999.0;
 int counter = 0;
+bool machine_ready = 0;
 //String name = "UNBEKANNT";
 // Optokoppler
 #define PIN_PC817 45
@@ -39,6 +40,7 @@ elapsedMillis stateJump;
 elapsedMillis bezug;
 elapsedMillis aufladebestaetigung;
 elapsedMillis t_relais;
+elapsedMillis powerLED;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();
@@ -61,6 +63,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(&spiBus, TFT_CS, TFT_DC, TFT_RST);
 #define SD_MISO 20
 #define SD_MOSI 21
 MyTable db("keytags.csv");
+MyTable dbcopy("backup.csv");
 int numRows;
 // RFID
 #define RFID_CS 4
@@ -90,7 +93,7 @@ void setup() {
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
   spiSD.begin(SD_CLK, SD_MISO, SD_MOSI);
   // SD Card
-  if (!SD.begin(SD_CS, spiSD)) {
+  if (!SD.begin(SD_CS, spiSD,40000000)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }
@@ -115,6 +118,18 @@ void setup() {
   db.writeCell(0, 1, "ID_HIGH");
   db.writeCell(0, 2, "SALDO");
   db.writeCell(0, 3, "COUNTER");
+  /************************************************************************************************************************************************************
+            /////////////////////////////////////////////////////////////Update copy csv/////////////////////////////////////////////////////////////////////
+  ************************************************************************************************************************************************************/
+  //Backup CSV Datei
+  dbcopy.begin(1, 4);
+  dbcopy.writeCell(0, 0, "ID_LOW");
+  dbcopy.writeCell(0, 1, "ID_HIGH");
+  dbcopy.writeCell(0, 2, "SALDO");
+  dbcopy.writeCell(0, 3, "COUNTER");
+  /************************************************************************************************************************************************************
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ************************************************************************************************************************************************************/
   // Display
   tft.initR(INITR_BLACKTAB);
   tft.setRotation(1);  // Querformat: 160x128
@@ -146,6 +161,7 @@ void loop() {
   machine.run();
   readRFID();
   updateButton();
+  machineReady();
   if (monitor > 250) {
     Serial.println(uidDec);
     //Serial.println(cardPresent);

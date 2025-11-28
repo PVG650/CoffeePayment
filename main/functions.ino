@@ -80,9 +80,30 @@ void updateArrow(int selectionMenu) {
 }
 //-------------------------------------------//
 void updateButton() {
-  if (debounce > 20) {
+  if (debounce > 30) {
     ok_button = !digitalRead(DI_ENCODER_SW);
     debounce = 0;
+  }
+  if(ok_button==LOW){
+    powerLED = 0;
+  }
+  if(powerLED>2500){
+    machine_ready = HIGH;
+  }
+  else{
+    machine_ready = LOW;
+  }
+}
+//-------------------------------------------//
+void machineReady() {
+  if(digitalRead(PIN_PC817)){
+    powerLED = 0;
+  }
+  if(powerLED>2500){
+    machine_ready = HIGH;
+  }
+  else{
+    machine_ready = LOW;
   }
 }
 //-------------------------------------------//
