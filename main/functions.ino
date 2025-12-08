@@ -96,14 +96,30 @@ void updateButton() {
 }
 //-------------------------------------------//
 void machineReady() {
-  if(digitalRead(PIN_PC817)){
-    powerLED = 0;
+  bare_LED = !digitalRead(PIN_PC817);
+  if(bare_LED){ // Power LED Raw Signal
+    LED_var = HIGH; // Power LED but without PWM effect
+    powerLED = 0; // elapsedMillis
   }
-  if(powerLED>2500){
+  if(powerLED>50){
+    LED_var = LOW;
+    downLED = 0; // elapsedSeconds
+  }
+  if (downLED>2){ // if Power Led is on (cleaned up from pwm) is on since at least 2sec (elapsedSeconds)
     machine_ready = HIGH;
   }
   else{
     machine_ready = LOW;
   }
+
+  // if(digitalRead(PIN_PC817)){
+  //   powerLED = 0;
+  // }
+  // if(powerLED>2500){
+  //   machine_ready = HIGH;
+  // }
+  // else{
+  //   machine_ready = LOW;
+  // }
 }
 //-------------------------------------------//

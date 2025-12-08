@@ -27,6 +27,8 @@ float saldo = 9999.0;
 float ladebetrag = 9999.0;
 int counter = 0;
 bool machine_ready = 0;
+bool bare_LED;
+bool LED_var;
 //String name = "UNBEKANNT";
 // Optokoppler
 #define PIN_PC817 45
@@ -41,6 +43,7 @@ elapsedMillis bezug;
 elapsedMillis aufladebestaetigung;
 elapsedMillis t_relais;
 elapsedMillis powerLED;
+elapsedSeconds downLED;
 // StateMachine
 int current_state = 0;
 StateMachine machine = StateMachine();

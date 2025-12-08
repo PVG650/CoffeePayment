@@ -149,6 +149,7 @@ bool transitionS3S2() {
 }
 bool transitionS3S1() {
   if (restartRequested) {
+    delay(250);
     digitalWrite(PIN_RELAIS, LOW);
     return true;
   }
