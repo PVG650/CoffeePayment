@@ -84,31 +84,33 @@ void updateButton() {
     ok_button = !digitalRead(DI_ENCODER_SW);
     debounce = 0;
   }
-  if(ok_button==LOW){
-    powerLED = 0;
-  }
-  if(powerLED>2500){
-    machine_ready = HIGH;
-  }
-  else{
-    machine_ready = LOW;
-  }
+  // if (ok_button == LOW) {
+  //   powerLED = 0;
+  // }
+  // if (powerLED > 2500) {
+  //   machine_ready = HIGH;
+  // } else {
+  //   machine_ready = LOW;
+  // }
 }
 //-------------------------------------------//
 void machineReady() {
   bare_LED = !digitalRead(PIN_PC817);
-  if(bare_LED){ // Power LED Raw Signal
-    LED_var = HIGH; // Power LED but without PWM effect
-    powerLED = 0; // elapsedMillis
+  Serial.print("bare_LED: ");
+  Serial.println(bare_LED);
+  Serial.print("LED_var: ");
+  Serial.println(LED_var);
+  if (bare_LED) {    // Power LED Raw Signal
+    LED_var = HIGH;  // Power LED but without PWM effect
+    powerLED = 0;    // elapsedMillis
   }
-  if(powerLED>50){
+  if (powerLED > 150) {
     LED_var = LOW;
-    downLED = 0; // elapsedSeconds
+    downLED = 0;  // elapsedSeconds
   }
-  if (downLED>2){ // if Power Led is on (cleaned up from pwm) is on since at least 2sec (elapsedSeconds)
+  if (downLED > 2 && LED_var) {  // if Power Led is on (cleaned up from pwm) is on since at least 2sec (elapsedSeconds)
     machine_ready = HIGH;
-  }
-  else{
+  } else {
     machine_ready = LOW;
   }
 

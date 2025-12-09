@@ -166,7 +166,7 @@ void loop() {
   updateButton();
   machineReady();
   if (monitor > 250) {
-    Serial.println(uidDec);
+    //Serial.println(uidDec);
     //Serial.println(cardPresent);
     // Serial.print("button: ");
     // Serial.println(ok_button);
