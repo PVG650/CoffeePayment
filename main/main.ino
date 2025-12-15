@@ -16,7 +16,7 @@
 // ------------------------- //
 
 // General
-float preis = 0.50;
+float preis = 0.00;
 bool selectionMenu = 0;
 int lastSelection = -1;
 bool restartRequested = false;
@@ -53,13 +53,20 @@ State* S3 = machine.addState(&state3);  // Bezug
 State* S4 = machine.addState(&state4);  // Aufladen
 State* S5 = machine.addState(&state5);  // Aufladen bestätigen
 // SPI
-SPIClass spiBus(HSPI);    // SPI 1 für RFID und Display
-SPIClass spiSD(FSPI);  // SPI 1 für RFID und Display
+SPIClass spiBus(HSPI);  // SPI 1 für RFID und Display
+SPIClass spiSD(FSPI);   // SPI 1 für RFID und Display
 // Display
 #define TFT_CS 15
 #define TFT_DC 16
 #define TFT_RST 7
 Adafruit_ST7735 tft = Adafruit_ST7735(&spiBus, TFT_CS, TFT_DC, TFT_RST);
+#define COLOR_ON ST77XX_BLUE
+#define COLOR_OFF_RING ST77XX_BLUE
+#define COLOR_OFF_FILL ST77XX_BLACK
+// Position und Größe der virtuellen LED auf dem Display
+const int VLED_X = 140;  // X-Position
+const int VLED_Y = 10;  // Y-Position
+const int VLED_R = 5;   // Radius
 // SD Card
 #define SD_CS 47
 #define SD_CLK 19
@@ -96,7 +103,7 @@ void setup() {
   spiBus.begin(36, 37, 35);  // Display and RFID, SPI 1
   spiSD.begin(SD_CLK, SD_MISO, SD_MOSI);
   // SD Card
-  if (!SD.begin(SD_CS, spiSD,40000000)) {
+  if (!SD.begin(SD_CS, spiSD, 40000000)) {
     Serial.println("SD-Karte konnte nicht initialisiert werden");
     while (true) delay(1000);
   }

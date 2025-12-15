@@ -84,14 +84,6 @@ void updateButton() {
     ok_button = !digitalRead(DI_ENCODER_SW);
     debounce = 0;
   }
-  // if (ok_button == LOW) {
-  //   powerLED = 0;
-  // }
-  // if (powerLED > 2500) {
-  //   machine_ready = HIGH;
-  // } else {
-  //   machine_ready = LOW;
-  // }
 }
 //-------------------------------------------//
 void machineReady() {
@@ -113,15 +105,102 @@ void machineReady() {
   } else {
     machine_ready = LOW;
   }
-
-  // if(digitalRead(PIN_PC817)){
-  //   powerLED = 0;
-  // }
-  // if(powerLED>2500){
-  //   machine_ready = HIGH;
-  // }
-  // else{
-  //   machine_ready = LOW;
-  // }
 }
 //-------------------------------------------//
+void updateVirtualLed(int LED_state_now) {
+  static int last_LED_state = -1;
+  // keine Display-Aktion wenn LED unverändert
+  if (LED_state_now == last_LED_state) {
+    return;
+  }
+  last_LED_state = LED_state_now;
+  if (LED_state_now == HIGH) {
+    tft.fillCircle(VLED_X, VLED_Y, VLED_R, COLOR_ON);
+  } else {
+    tft.fillCircle(VLED_X, VLED_Y, VLED_R, COLOR_OFF_FILL);
+    tft.drawCircle(VLED_X, VLED_Y, VLED_R, COLOR_OFF_RING);
+    // Optional: zweiten Ring für stärkere Kontur
+    // tft.drawCircle(VLED_X, VLED_Y, VLED_R - 1, COLOR_OFF_RING);
+  }
+}
+//-------------------------------------------//
+void drawRedTreeSymmetric() {
+  uint16_t treeColor  = ST77XX_RED;
+  uint16_t trunkColor = ST77XX_RED;
+  uint16_t bgColor    = ST77XX_BLACK;
+
+  int w = tft.width();    // 160
+  int h = tft.height();   // 128
+
+  //tft.fillScreen(bgColor);
+
+  int centerX   = w / 2;   // 80
+  int topMargin = 50;      // 50 px Abstand oben
+
+  // Baumparameter (schmalere Version)
+  const int levels         = 4;
+  const int heightPerLevel = 16;
+  const int baseWidth      = 90;   // vorher 120 -> jetzt schmaler
+
+  // ------------------------------------
+  // 1) Dreiecke zeichnen (Schmal-Version)
+  // ------------------------------------
+  for (int i = 0; i < levels; i++) {
+    int yTop    = topMargin + i * heightPerLevel;
+    int yBottom = yTop + heightPerLevel;
+
+    // schmalerer Faktor
+    float widthFactor = 0.28f + (float)i / (levels + 1);
+    int width = (int)(baseWidth * widthFactor);
+
+    int xLeft  = centerX - width / 2;
+    int xRight = centerX + width / 2;
+
+    tft.fillTriangle(
+      xLeft,   yBottom,
+      centerX, yTop,
+      xRight,  yBottom,
+      treeColor
+    );
+  }
+
+  // Unterkante der unteren Stufe
+  int baseY = topMargin + levels * heightPerLevel;
+
+  // -------------------------------
+  // 2) Stamm (leicht schmaler)
+  // -------------------------------
+  const int trunkWidth  = 16;     // vorher 18
+  const int trunkHeight = 18;
+
+  int trunkX = centerX - trunkWidth / 2;
+  int trunkY = baseY + 2;
+
+  tft.fillRect(trunkX, trunkY, trunkWidth, trunkHeight, trunkColor);
+
+  // -------------------------------
+  // 3) Stern (integriert)
+  // -------------------------------
+  int   starCx = centerX;
+  int   starCy = topMargin - 12;
+  float outerR = 8.0f;
+  float innerR = 4.0f;
+
+  for (int k = 0; k < 10; k++) {
+    int k2 = (k + 1) % 10;
+
+    float angle1 = PI / 2.0f + k  * (PI / 5.0f);
+    float angle2 = PI / 2.0f + k2 * (PI / 5.0f);
+
+    float r1 = (k  % 2 == 0) ? outerR : innerR;
+    float r2 = (k2 % 2 == 0) ? outerR : innerR;
+
+    int x1 = starCx + (int)roundf(r1 * cosf(angle1));
+    int y1 = starCy - (int)roundf(r1 * sinf(angle1));
+    int x2 = starCx + (int)roundf(r2 * cosf(angle2));
+    int y2 = starCy - (int)roundf(r2 * sinf(angle2));
+
+    tft.drawLine(x1, y1, x2, y2, treeColor);
+  }
+}
+

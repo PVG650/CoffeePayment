@@ -83,6 +83,13 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     // Neuen Pfeil zeichnen
     if (selectionMenu == 0) drawArrow(30, 60);
     else if (selectionMenu == 1) drawArrow(30, 95);
+    // LED initial zeichnen
+    if (LED_var == HIGH) {
+      tft.fillCircle(VLED_X, VLED_Y, VLED_R, COLOR_ON);
+    } else {
+      tft.fillCircle(VLED_X, VLED_Y, VLED_R, COLOR_OFF_FILL);
+      tft.drawCircle(VLED_X, VLED_Y, VLED_R, COLOR_OFF_RING);
+    }
   }
   if (rawValue % 2 == 0) {
     selectionMenu = 0;
@@ -90,10 +97,11 @@ void state2() {  // Auswahl Kaffee bzw. Aufladen
     selectionMenu = 1;
   }
   updateArrow(selectionMenu);
+  updateVirtualLed(LED_var);
 }
 bool transitionS2S3() {
   if (selectionMenu == 0 && ok_button) {
-    bezug = 0;                      // timer für die Dauer des "state: bezug" starten
+    bezug = 0;            // timer für die Dauer des "state: bezug" starten
     if (machine_ready) {  // Bezug nur zulassen, wenn Maschine auch angeschalten ist (Optokoppler an LED ON/OFF Knopf)
       return true;
     }
@@ -127,6 +135,7 @@ void state3() {  // Kaffeebezug
     db.writeCell(nutzerNummer, 3, counter);
     tft.fillScreen(ST77XX_BLACK);
     tft.setTextSize(2);
+    /* PRE HOLIDAY UPDATE
     tft.setCursor(62, 40);
     tft.print("...");
     tft.setCursor(30, 80);
@@ -135,6 +144,15 @@ void state3() {  // Kaffeebezug
     tft.print(preis);
     tft.setCursor(100, 80);
     tft.print("EUR");
+    */
+    //HOLIDAY UPDATE
+    tft.setCursor(30, 10);
+    tft.print("-");
+    tft.setCursor(45, 10);
+    tft.print(preis);
+    tft.setCursor(100, 10);
+    tft.print("EUR");
+    drawRedTreeSymmetric();
   }
   if (t_relais > 500) {
     digitalWrite(PIN_RELAIS, LOW);
@@ -222,24 +240,24 @@ void state5() {  // Aufladen bestätigen
     numRows = db.countRows();  // Aktuelle Anzahl der Zeilen ermitteln
     dbcopy.emptyTable();       // Datei leeren
     dbcopy.begin(numRows, 4);  // Backup-Datei mit korrekter Größe neu initialisieren
-    
-    tft.setCursor(16,100);
+
+    tft.setCursor(16, 100);
     tft.print("SPEICHERN..");
     // Header kopieren
-    for(int j = 0; j < 4; ++j) {
+    for (int j = 0; j < 4; ++j) {
       String header = db.readCell(0, j);
       dbcopy.writeCell(0, j, header);
     }
-    
+
     // Daten Zeilenweise kopieren in Backup
     for (int i = 1; i < numRows; ++i) {
-      for(int j = 0; j < 4; ++j) {
+      for (int j = 0; j < 4; ++j) {
         String spalte = db.readCell(i, j);
         dbcopy.writeCell(i, j, spalte);
       }
     }
     tft.fillScreen(ST77XX_BLACK);
-    tft.setCursor(16,60);
+    tft.setCursor(16, 60);
     tft.print("GESPEICHERT!");
     aufladebestaetigung = 0;
     /************************************************************************************************************************************************************
