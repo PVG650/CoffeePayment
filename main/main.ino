@@ -19,7 +19,7 @@
 // ------------------------- //
 
 // General
-float preis = 0.30;
+float preis = 0.00;
 bool selectionMenu = 0;
 int lastSelection = -1;
 bool restartRequested = false;
