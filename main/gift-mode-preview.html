@@ -1,0 +1,39 @@
+<div id="gift-mode-preview" aria-label="Vorschau des Geschenkmodus-Displays">
+  <style>
+    #gift-mode-preview {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: light-dark(#edf1f5, #1b1e22);
+    }
+
+    #gift-mode-preview .display {
+      width: min(100%, 640px);
+      aspect-ratio: 160 / 128;
+      background: #000;
+      color: #fff;
+      image-rendering: pixelated;
+    }
+
+    #gift-mode-preview svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #gift-mode-preview text {
+      fill: currentColor;
+      font-family: monospace;
+      font-weight: 500;
+    }
+  </style>
+  <div class="display">
+    <svg viewBox="0 0 160 128" role="img" aria-label="Schwarzes 160 mal 128 Pixel Display mit zentriertem Text DANKE STEFAN">
+      <text x="30" y="25" font-size="12">-</text>
+      <text x="45" y="25" font-size="12">preis</text>
+      <text x="100" y="25" font-size="12">EUR</text>
+      <text x="62" y="55" font-size="12">...</text>
+      <text x="80" y="72" font-size="20" text-anchor="middle">DANKE STEFAN!</text>
+    </svg>
+  </div>
+</div>

@@ -104,6 +104,8 @@ void state3() {  // Kaffeebezug
     //  Hier die DB aktualisieren
     buchung(uidDec, saldo, counter);
 
+    /*
+    // DEFAULT MODE
     tft.setCursor(30, 80);
     tft.print("-");
     tft.setCursor(45, 80);
@@ -116,8 +118,10 @@ void state3() {  // Kaffeebezug
     tft.print("COFFEE NO.:");
     tft.setCursor(105, 110);
     tft.print(counter);
+    */
 
-    /*HOLIDAY UPDATE
+    /*
+    // HOLIDAY UPDATE
     tft.setCursor(30, 10);
     tft.print("-");
     tft.setCursor(45, 10);
@@ -126,6 +130,22 @@ void state3() {  // Kaffeebezug
     tft.print("EUR");
     drawRedTreeSymmetric();
     */
+
+    // GIFT MODE
+    tft.setCursor(30, 10);
+    tft.print("-");
+    tft.setCursor(45, 10);
+    tft.print(preis);
+    tft.setCursor(100, 10);
+    tft.print("EUR");
+    const char thankYouText[] = "DANKE STEFAN!";
+    int16_t textX1, textY1;
+    uint16_t textWidth, textHeight;
+    tft.getTextBounds(thankYouText, 0, 0, &textX1, &textY1, &textWidth, &textHeight);
+    tft.setCursor((tft.width() - textWidth) / 2 - textX1,
+                  (tft.height() - textHeight) / 2 + 30);
+    tft.print(thankYouText);
+
   }
   if (t_relais > 500) {
     digitalWrite(PIN_RELAIS, LOW);
